@@ -14,8 +14,10 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { API } from "../../API/api";
 import { notifications } from "@mantine/notifications";
 import { queryClient } from "../../main";
+import useAuthStore from "../../store/authStore";
 
 const Faq = () => {
+  const { isAuth } = useAuthStore();
   const { data: faqs, isLoading } = useQuery({
     queryKey: ["faq"],
     queryFn: () => API.get("/faqs").then((res) => res.data.data),
@@ -74,32 +76,36 @@ const Faq = () => {
   return (
     <Container size="lg" py="xl">
       <Stack spacing="xl">
-        <Box>
-          <Title order={2} mb="md">
-            FAQ Boshqaruv Paneli
-          </Title>
-          <Card shadow="sm" padding="lg" radius="md" withBorder>
-            <form onSubmit={handleSubmit}>
-              <Stack spacing="sm">
-                <TextInput
-                  name="question"
-                  placeholder="Savolni kiriting"
-                  label="Savol"
-                  required
-                />
-                <TextInput
-                  name="answer"
-                  placeholder="Javobni kiriting"
-                  label="Javob"
-                  required
-                />
-                <Button type="submit" color="blue" fullWidth>
-                  Qo'shish
-                </Button>
-              </Stack>
-            </form>
-          </Card>
-        </Box>
+        {isAuth ? (
+          <Box>
+            <Title order={2} mb="md">
+              FAQ Boshqaruv Paneli
+            </Title>
+            <Card shadow="sm" padding="lg" radius="md" withBorder>
+              <form onSubmit={handleSubmit}>
+                <Stack spacing="sm">
+                  <TextInput
+                    name="question"
+                    placeholder="Savolni kiriting"
+                    label="Savol"
+                    required
+                  />
+                  <TextInput
+                    name="answer"
+                    placeholder="Javobni kiriting"
+                    label="Javob"
+                    required
+                  />
+                  <Button type="submit" color="blue" fullWidth>
+                    Qo'shish
+                  </Button>
+                </Stack>
+              </form>
+            </Card>
+          </Box>
+        ) : (
+          ""
+        )}
 
         <Box>
           <Title order={3} mb="md">
@@ -112,20 +118,24 @@ const Faq = () => {
           ) : (
             <Accordion variant="separated" radius="md" chevronPosition="right">
               {faqs.map((faq) => (
-                <Accordion.Item key={faq.id} value={faq.answer}>
+                <Accordion.Item key={faq.id} value={String(faq.id)}>
                   <Accordion.Control>{faq.question}</Accordion.Control>
                   <Accordion.Panel>
                     <Stack spacing="sm">
                       <Text>{faq.answer}</Text>
-                      <Group position="right">
-                        <Button
-                          color="red"
-                          size="xs"
-                          variant="outline"
-                          onClick={() => handleDelete(faq.id)}
-                        >
-                          O'chirish
-                        </Button>
+                      <Group justify="flex-end">
+                        {isAuth ? (
+                          <Button
+                            color="red"
+                            size="xs"
+                            variant="outline"
+                            onClick={() => handleDelete(faq.id)}
+                          >
+                            O'chirish
+                          </Button>
+                        ) : (
+                          ""
+                        )}
                       </Group>
                     </Stack>
                   </Accordion.Panel>

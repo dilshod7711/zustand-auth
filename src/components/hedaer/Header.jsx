@@ -7,7 +7,7 @@ const Header = () => {
   const { user, isAuth } = useAuthStore();
 
   return (
-    <header className="bg-white shadow-md sticky top-0 z-50">
+    <header className="bg-white shadow-xs sticky top-0 z-50">
       <Container py="md">
         <Flex justify="space-between" align="center">
           <div className="text-2xl font-bold text-indigo-600">MyApp</div>
@@ -37,7 +37,7 @@ const Header = () => {
                 to="/profile"
                 className="hover:text-indigo-500 transition font-semibold"
               >
-                {user?.data?.firstName}
+                {user?.firstName}
               </NavLink>
             ) : (
               <NavLink
